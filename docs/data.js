@@ -1025,3 +1025,40 @@ window.SEED = {
   }
  ]
 };
+
+// Turnover War Room seed — Fall 2026 turn, 8 buildings / 2,224 units. Fictional demo data.
+window.SEED.war = {
+ "season": "Fall 2026 Turn",
+ "moveInDay": "2026-10-24",
+ "buildings": [
+  {"name": "Cypress Hall",  "units": 312, "ready": 296, "blocked": 4,  "qcPass": 98},
+  {"name": "Palmetto Hall", "units": 288, "ready": 251, "blocked": 9,  "qcPass": 93},
+  {"name": "Magnolia Hall", "units": 296, "ready": 274, "blocked": 5,  "qcPass": 96},
+  {"name": "Live Oak Hall", "units": 264, "ready": 198, "blocked": 14, "qcPass": 88},
+  {"name": "Sabal Hall",    "units": 280, "ready": 262, "blocked": 6,  "qcPass": 95},
+  {"name": "Juniper Hall",  "units": 272, "ready": 231, "blocked": 11, "qcPass": 91},
+  {"name": "Bayberry Hall", "units": 256, "ready": 244, "blocked": 3,  "qcPass": 97},
+  {"name": "Holly Hall",    "units": 256, "ready": 207, "blocked": 12, "qcPass": 89}
+ ],
+ "blockers": [
+  {"id": "BL-01", "building": "Live Oak Hall", "unit": "D-118", "category": "HVAC",         "detail": "Compressor failed; replacement part on backorder",       "owner": "M. Torres", "opened": "2026-09-18", "severity": "High",     "status": "Open"},
+  {"id": "BL-02", "building": "Live Oak Hall", "unit": "D-204", "category": "Plumbing",     "detail": "Stack leak affecting 4 units below; plumber scheduled",  "owner": "J. Rivera", "opened": "2026-09-21", "severity": "High",     "status": "Open"},
+  {"id": "BL-03", "building": "Juniper Hall",  "unit": "F-311", "category": "Appliances",   "detail": "Range missing — warehouse transfer pending",            "owner": "S. Patel",  "opened": "2026-09-24", "severity": "Standard", "status": "Open"},
+  {"id": "BL-04", "building": "Holly Hall",    "unit": "H-102", "category": "Keys / Locks", "detail": "Master keyway re-key after lost sub-master",            "owner": "D. Kim",    "opened": "2026-09-25", "severity": "High",     "status": "Open"},
+  {"id": "BL-05", "building": "Palmetto Hall", "unit": "B-207", "category": "Damages",      "detail": "Drywall + paint; resident damage billing disputed",     "owner": "A. Morgan", "opened": "2026-09-26", "severity": "Standard", "status": "Open"},
+  {"id": "BL-06", "building": "Juniper Hall",  "unit": "F-118", "category": "Cleaning",     "detail": "Deep clean re-do failed QC twice",                     "owner": "S. Patel",  "opened": "2026-09-27", "severity": "Standard", "status": "Open"},
+  {"id": "BL-07", "building": "Live Oak Hall", "unit": "D-322", "category": "Inspection",   "detail": "Fire extinguisher missing; life-safety hold",           "owner": "J. Rivera", "opened": "2026-09-28", "severity": "High",     "status": "Open"},
+  {"id": "BL-08", "building": "Holly Hall",    "unit": "H-215", "category": "HVAC",         "detail": "Thermostat unresponsive; linked work order open",       "owner": "M. Torres", "opened": "2026-09-29", "severity": "Standard", "status": "Open"},
+  {"id": "BL-09", "building": "Magnolia Hall", "unit": "C-109", "category": "Pest",         "detail": "Treatment completed; 48-hr clearance wait",             "owner": "D. Kim",    "opened": "2026-09-29", "severity": "Low",      "status": "Open"},
+  {"id": "BL-10", "building": "Sabal Hall",    "unit": "E-301", "category": "Flooring",     "detail": "LVP plank replacement — material arriving 10/2",       "owner": "A. Morgan", "opened": "2026-09-30", "severity": "Standard", "status": "Open"}
+ ],
+ "milestones": [
+  {"label": "Move-outs complete — turn start", "date": "2026-08-01", "done": true},
+  {"label": "Make-ready blitz — all units touched", "date": "2026-08-29", "done": true},
+  {"label": "First-pass inspections", "date": "2026-09-12", "done": true},
+  {"label": "QC walks — all buildings", "date": "2026-10-03", "done": false},
+  {"label": "Final clean + key audit", "date": "2026-10-20", "done": false},
+  {"label": "Early move-in window opens", "date": "2026-10-22", "done": false},
+  {"label": "Move-in day", "date": "2026-10-24", "done": false}
+ ]
+};

@@ -28,6 +28,7 @@ const DB = {
     this.data = clone(window.SEED);
     // stable ids for recovery rows
     this.data.recovery.forEach((r, i) => { if (!r.id) r.id = "RC-" + (i + 1); });
+    if (!this.data.war) this.data.war = clone(window.SEED.war); // v4 migration
     this.save();
   },
   save() { try { localStorage.setItem(LS_KEY, JSON.stringify(this.data)); } catch (e) {} },
@@ -95,7 +96,8 @@ const actionCount = () => { const a = actionItems(); return a.breaches.length + 
 
 /* ============================== chrome ============================== */
 const TITLES = { command: "Command", action: "Action Center", workorders: "Work Orders",
-  turnover: "Turnover", retention: "Retention", recovery: "Service Recovery", report: "Weekly Report" };
+  turnover: "Turnover", retention: "Retention", recovery: "Service Recovery", report: "Weekly Report",
+  warroom: "Turnover War Room" };
 let charts = [];
 function destroyCharts() { charts.forEach(c => { try { c.destroy(); } catch (e) {} }); charts = []; }
 
@@ -118,6 +120,7 @@ function renderPulse() {
   set("turnover", a.qcFails.length);
   set("retention", a.outreach.length);
   set("recovery", a.followUps.length);
+  set("warroom", warOpen().length);
 }
 
 function go(view, opts) {
@@ -138,7 +141,7 @@ function render(opts) {
   $("#dateLine").textContent = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
   renderPulse();
   const V = { command: vCommand, action: vAction, workorders: vWorkOrders, turnover: vTurnover,
-              retention: vRetention, recovery: vRecovery, report: vReport };
+              retention: vRetention, recovery: vRecovery, report: vReport, warroom: vWarRoom };
   (V[view] || vCommand)(opts);
   window.scrollTo(0, 0);
 }
@@ -640,6 +643,106 @@ function vReport() {
         : `<div class="empty">No breaches this week.</div>`}
       <p class="muted" style="margin-top:18px;font-size:12px">Generated ${fmtD(t)} · sample data for demonstration. Full detail lives in the Action Center.</p>
     </div>`;
+}
+
+/* ============================== war room ============================== */
+const WAR_CATS = ["HVAC", "Plumbing", "Electrical", "Appliances", "Keys / Locks", "Cleaning", "Damages", "Inspection", "Pest", "Flooring", "Other"];
+const warOpen = () => DB.data.war.blockers.filter(b => b.status === "Open");
+function warStats() {
+  const w = DB.data.war;
+  const units = w.buildings.reduce((a, b) => a + b.units, 0);
+  const ready = w.buildings.reduce((a, b) => a + b.ready, 0);
+  const blocked = w.buildings.reduce((a, b) => a + b.blocked, 0);
+  const qc = Math.round(w.buildings.reduce((a, b) => a + b.qcPass, 0) / w.buildings.length);
+  const daysLeft = daysBetween(todayISO(), w.moveInDay);
+  return { units, ready, blocked, qc, daysLeft, pct: Math.round(ready / units * 100) };
+}
+const bldgStatus = pct => pct >= 90 ? `<span class="pill green">On Track</span>`
+  : pct >= 80 ? `<span class="pill amber">Watch</span>` : `<span class="pill red">Behind</span>`;
+const sevPill = sv => `<span class="pill ${sv === "High" ? "red" : sv === "Standard" ? "amber" : "gray"}">${esc(sv)}</span>`;
+function vWarRoom() {
+  const w = DB.data.war, s = warStats();
+  const sevRank = { High: 0, Standard: 1, Low: 2 };
+  const open = warOpen().sort((a, b) => (sevRank[a.severity] - sevRank[b.severity]) || (a.opened < b.opened ? -1 : 1));
+  $("#view").innerHTML = `
+  <div class="warbanner">
+    <div class="war-main">
+      <div class="war-season">${esc(w.season)}</div>
+      <h2>Turnover War Room</h2>
+      <div class="war-sub">Move-in day ${fmtD(w.moveInDay)} · ${w.buildings.length} buildings · ${s.units.toLocaleString()} units</div>
+      <div class="war-track"><div class="war-fill" style="width:${s.pct}%"></div></div>
+      <div class="war-pctline"><b>${s.pct}%</b> units ready · ${s.blocked} blocked</div>
+    </div>
+    <div class="war-count"><div class="war-days">${s.daysLeft}</div><div class="war-lbl">days to<br>move-in</div></div>
+  </div>
+  <div class="grid g4" style="margin:16px 0">
+    <div class="card"><h3>Units ready</h3><div class="kpi-num" style="color:var(--green)">${s.ready.toLocaleString()}</div><div class="muted">of ${s.units.toLocaleString()}</div></div>
+    <div class="card"><h3>Blocked units</h3><div class="kpi-num" style="color:var(--red)">${s.blocked}</div><div class="muted">across ${w.buildings.filter(b => b.blocked > 0).length} buildings</div></div>
+    <div class="card"><h3>Open blockers</h3><div class="kpi-num" style="color:var(--amber)">${open.length}</div><div class="muted">${open.filter(b => b.severity === "High").length} high severity</div></div>
+    <div class="card"><h3>Avg QC pass rate</h3><div class="kpi-num">${s.qc}%</div><div class="muted">first-pass inspections</div></div>
+  </div>
+  <div class="grid g2" style="margin-bottom:16px">
+    <div class="card"><h3>Building readiness</h3>
+      <div class="tblwrap"><table><thead><tr><th>Building</th><th class="num">Units</th><th style="width:34%">Ready</th><th class="num">Blocked</th><th class="num">QC</th><th>Status</th></tr></thead><tbody>
+      ${w.buildings.map(b => { const pct = Math.round(b.ready / b.units * 100); return `<tr>
+        <td><b>${esc(b.name)}</b></td><td class="num">${b.units}</td>
+        <td><div class="pbar"><div class="pfill ${pct >= 90 ? "g" : pct >= 80 ? "a" : "r"}" style="width:${pct}%"></div></div><span class="muted">${pct}%</span></td>
+        <td class="num" style="${b.blocked > 8 ? "color:var(--red);font-weight:700" : ""}">${b.blocked}</td>
+        <td class="num">${b.qcPass}%</td><td>${bldgStatus(pct)}</td></tr>`; }).join("")}
+      </tbody></table></div>
+    </div>
+    <div class="card"><h3>Turn timeline</h3><div class="tl">
+      ${w.milestones.map((m, i) => { const next = !m.done && (i === 0 || w.milestones[i - 1].done);
+        return `<div class="tlrow ${m.done ? "done" : next ? "next" : ""}"><div class="tldot">${m.done ? "✓" : ""}</div>
+        <div><div class="tllabel">${esc(m.label)}</div><div class="muted">${fmtD(m.date)}</div></div></div>`; }).join("")}
+    </div></div>
+  </div>
+  <div class="toolbar"><h3 style="font-size:14px">Blocker board</h3><span class="spacer"></span>
+    <button class="btn primary" id="blkAdd">＋ Log blocker</button></div>
+  <div class="blkgrid">
+    ${open.map(b => { const d = daysBetween(b.opened, todayISO()); return `
+    <div class="card blk">
+      <div class="blk-top">${sevPill(b.severity)}<span class="pill blue">${esc(b.category)}</span><span class="spacer"></span><b>${esc(b.id)}</b></div>
+      <div class="blk-unit">Unit ${esc(b.unit)} · ${esc(b.building)}</div>
+      <div class="blk-detail">${esc(b.detail)}</div>
+      <div class="blk-meta muted">Owner: ${esc(b.owner)} · open ${d}d</div>
+      <div class="blk-act"><button class="btn ghost sm" data-res="${b.id}">Resolve</button></div>
+    </div>`; }).join("") || `<div class="empty">No open blockers. The turn is clean.</div>`}
+  </div>`;
+  $("#blkAdd").onclick = () => blkModal();
+  $$("#view [data-res]").forEach(x => x.onclick = () => {
+    const b = w.blockers.find(y => y.id === x.dataset.res);
+    if (b && confirm(`Mark ${b.id} (Unit ${b.unit}) resolved?`)) {
+      b.status = "Resolved"; b.resolved = todayISO();
+      const bd = w.buildings.find(z => z.name === b.building);
+      if (bd) bd.blocked = Math.max(0, bd.blocked - 1);
+      DB.save(); renderPulse(); vWarRoom(); toast("Blocker resolved");
+    }
+  });
+}
+function blkModal() {
+  const w = DB.data.war;
+  const id = "BL-" + String(w.blockers.length + 1).padStart(2, "0");
+  const close = openModal("Log blocker", `
+    <div class="f2">
+      <div class="frow"><label>Building</label><select id="fB">${w.buildings.map(b => `<option>${esc(b.name)}</option>`).join("")}</select></div>
+      <div class="frow"><label>Unit</label><input id="fU" placeholder="D-118"></div>
+      <div class="frow"><label>Category</label><select id="fC">${WAR_CATS.map(c => `<option>${c}</option>`).join("")}</select></div>
+      <div class="frow"><label>Severity</label><select id="fS"><option>High</option><option selected>Standard</option><option>Low</option></select></div>
+    </div>
+    <div class="frow"><label>Detail</label><input id="fD" placeholder="What's holding this unit?"></div>
+    <div class="frow"><label>Owner</label><input id="fO" placeholder="Name"></div>`,
+    `<button class="btn ghost" id="mCancel">Cancel</button><button class="btn primary" id="mSave">Log blocker</button>`);
+  $("#mCancel").onclick = close;
+  $("#mSave").onclick = () => {
+    const unit = $("#fU").value.trim(), detail = $("#fD").value.trim(), owner = $("#fO").value.trim() || "Unassigned";
+    if (!unit || !detail) { toast("Unit and detail are required"); return; }
+    const bldg = $("#fB").value;
+    w.blockers.push({ id, building: bldg, unit, category: $("#fC").value, detail, owner, opened: todayISO(), severity: $("#fS").value, status: "Open" });
+    const bd = w.buildings.find(z => z.name === bldg);
+    if (bd) bd.blocked += 1;
+    DB.save(); close(); renderPulse(); vWarRoom(); toast("Blocker " + id + " logged");
+  };
 }
 
 /* ============================== init ============================== */

@@ -39,6 +39,7 @@ script to regenerate everything from scratch):
 - **Action Center** — the daily priority queue. SLA breaches, at-risk items, due follow-ups, QC failures, and renewal outreach surface automatically through hidden `_seq_` helper columns (plain `COUNTIF`/`MATCH` sequencing — no array formulas, so it works in Excel, Sheets, and LibreOffice). Fix the source row and this page updates itself; every item links straight back to its tracker row
 - **Dashboard** — live KPIs plus four auto-updating charts (work orders by category, SLA status, turnover pipeline, renewal intent), 100% formula-driven
 - **Weekly Report** — print-ready one-pager for standup or 1:1s: this week's numbers and the top 3 breaches, every value a live formula
+- **Turnover War Room** — turn-season command view: move-in countdown, per-building readiness bars across 2,224 units, a severity-ranked blocker board (log/resolve), and a turn milestone timeline
 - **Work Orders** — full lifecycle tracking with automatic SLA targets by priority (Emergency 1d · High 3d · Standard 7d · Low 14d) and real-time Breached / At Risk / On Track flagging
 - **Turnover** — unit make-ready pipeline: inspection → deficiencies → QC → ready, built for high-volume turnover surges
 - **Retention** — lease-renewal pipeline with outreach tracking and retention rate on decided units
