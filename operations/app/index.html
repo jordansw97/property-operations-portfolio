@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flamingo Ops Console — Property Operations Command Center</title>
+<link rel="stylesheet" href="styles.css">
+<script src="vendor/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <h1>Flamingo Ops Console</h1>
+      <p>Property Operations Command Center<br>Flamingo Crossings Village</p>
+    </div>
+    <nav class="nav" id="nav">
+      <button data-view="command"><span class="ico">◈</span>Command<span class="cnt" id="cnt-command"></span></button>
+      <button data-view="action"><span class="ico">⚡</span>Action Center<span class="cnt" id="cnt-action"></span></button>
+      <button data-view="workorders"><span class="ico">▤</span>Work Orders<span class="cnt" id="cnt-workorders"></span></button>
+      <button data-view="turnover"><span class="ico">🏠</span>Turnover<span class="cnt" id="cnt-turnover"></span></button>
+      <button data-view="retention"><span class="ico">🔑</span>Retention<span class="cnt" id="cnt-retention"></span></button>
+      <button data-view="recovery"><span class="ico">🛟</span>Service Recovery<span class="cnt" id="cnt-recovery"></span></button>
+      <button data-view="report"><span class="ico">📄</span>Weekly Report</button>
+    </nav>
+    <div class="side-foot">
+      Sample data for demonstration.<br>Built by Jordan S. Williams
+      <br><button id="resetBtn">Reset demo data</button>
+    </div>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <div><h2 id="viewTitle">Command</h2><div class="date" id="dateLine"></div></div>
+      <div class="spacer"></div>
+      <div class="pulse-pills" id="pulsePills"></div>
+    </div>
+    <div class="view" id="view"></div>
+  </div>
+</div>
+<div id="modalRoot"></div>
+<div id="toasts"></div>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

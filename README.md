@@ -9,9 +9,26 @@ A working portfolio of property operations management: not just what I've done, 
 | Folder | Contents |
 |---|---|
 | `/portfolio` | Four one-page leadership narratives: the promotion case, crisis response team funding, 20% shrink reduction, and a 2,224-unit turnover surge |
-| `/operations` | **Property Operations Toolkit** (`property-operations-toolkit.xlsx`) — a proof-of-concept workbook for running a residential community, plus its build script and data dictionary |
+| `/operations` | **Property Operations Toolkit** — two builds of the same system: a proof-of-concept workbook (`property-operations-toolkit.xlsx`) and a full web app (`/app`) |
 
-## The Operations Toolkit
+## The Ops Console (web app) ⭐
+
+**[Flamingo Ops Console](operations/app/index.html)** — the toolkit rebuilt as a real interactive web app.
+Same data model, same SLA engine, same Action Center logic — but alive: live pulse stats in
+the top bar, a clickable Action Center that deep-links into each tracker, a turnover kanban,
+one-tap renewal touch logging, follow-up due highlighting, Chart.js dashboards, full add/edit
+CRUD on every tracker, CSV export, and a print-ready Weekly Report. Edits persist in the
+browser (localStorage); the demo resets to sample data in one click.
+
+No build step, no dependencies to install — it's static HTML/CSS/JS with a vendored Chart.js.
+To put it on **GitHub Pages**: copy the contents of `operations/app/` into a `/docs` folder at the
+repo root (or a `gh-pages` branch), then *Settings → Pages → Deploy from branch → `/docs`*.
+
+Generated from the workbook's real sample data by
+[`operations/export_data.py`](operations/export_data.py) (`app/data.js`), so the spreadsheet
+and the app always tell the same story.
+
+## The Operations Toolkit (spreadsheet)
 
 A ten-sheet workbook that runs the core loops of property operations — built with
 [`operations/build_toolkit.py`](operations/build_toolkit.py) and upgraded by
