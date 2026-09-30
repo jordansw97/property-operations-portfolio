@@ -1,6 +1,6 @@
 # Property Operations Portfolio
 
-**Jordan S. Williams** — Resident Experience Specialist (Shift Lead), American Campus Communities
+**Jordan S. Williams** 
 
 A working portfolio of property operations management: not just what I've done, but *how I run the operation*. The narratives in `/portfolio` tell the story; the toolkit in `/operations` proves the method.
 
