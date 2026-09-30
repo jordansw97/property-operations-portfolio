@@ -1,4 +1,4 @@
-/* Flamingo Ops Console — property operations command center.
+/* Turnkey Ops — property operations command center.
    Sample data seeded from data.js; edits persist to localStorage. */
 "use strict";
 
@@ -17,7 +17,7 @@ const diffDays = (a, b) => Math.round((parseD(b) - parseD(a)) / DAY);
 const clone = o => JSON.parse(JSON.stringify(o));
 
 /* ============================== store ============================== */
-const LS_KEY = "flamingo-ops-v1";
+const LS_KEY = "turnkey-ops-v1";
 const DB = {
   data: null,
   load() {
@@ -627,7 +627,7 @@ function vReport() {
       <button class="btn primary" onclick="window.print()">🖨 Print / Save PDF</button></div>
     <div class="report">
       <h1>Weekly Operations Report</h1>
-      <div class="wk">Week of ${fmtD(weekAgo)} – ${fmtD(t)} · Flamingo Crossings Village</div>
+      <div class="wk">Week of ${fmtD(weekAgo)} – ${fmtD(t)}</div>
       <div class="rkpis">
         ${[["Work orders closed", closedWk], ["Avg days to close", avg], ["SLA breaches now", br.length],
            ["Units made ready", readyWk], ["Renewals secured", renew], ["Avg satisfaction", sat]]

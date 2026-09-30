@@ -13,7 +13,7 @@ A working portfolio of property operations management: not just what I've done, 
 
 ## The Ops Console (web app) ⭐
 
-**[Flamingo Ops Console](operations/app/index.html)** — the toolkit rebuilt as a real interactive web app.
+**[Turnkey Ops](operations/app/index.html)** — the toolkit rebuilt as a real interactive web app.
 Same data model, same SLA engine, same Action Center logic — but alive: live pulse stats in
 the top bar, a clickable Action Center that deep-links into each tracker, a turnover kanban,
 one-tap renewal touch logging, follow-up due highlighting, Chart.js dashboards, full add/edit
